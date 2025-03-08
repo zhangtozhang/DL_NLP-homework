@@ -1,0 +1,81 @@
+import nltk
+import math
+import re
+from nltk.corpus import gutenberg
+from nltk.probability import FreqDist
+import matplotlib.pyplot as plt
+
+# 下载古腾堡语料库
+nltk.download('gutenberg')
+r1 = r'[^a-zA-Z\s]'
+text = gutenberg.raw()
+text = re.sub(r1, ' ', text) 
+text = text.lower()
+words = text.split()
+letters = [char for char in text if char.isalpha()]
+
+word_freq = FreqDist(words)
+letter_freq = FreqDist(letters)
+
+print("单词列表（前50个）：", words[:50])
+print("字母列表（前50个）：", letters[:50])
+print( f"词语料库数量：{len(words)},字语料库数量：{len(letters)}" )
+
+max_word_freq = max(word_freq.items(), key=lambda x: x[1])
+max_letter_freq = max(letter_freq.items(), key=lambda x: x[1])
+
+min_word_freq = min(word_freq.items(), key=lambda x: x[1])
+min_letter_freq = min(letter_freq.items(), key=lambda x: x[1])
+
+# 输出结果
+print(f"单词频率最大值：{max_word_freq[0]}，频次：{max_word_freq[1]}")
+print(f"字母频率最大值：{max_letter_freq[0]}，频次：{max_letter_freq[1]}")
+
+print(f"单词频率最小值：{min_word_freq[0]}，频次：{min_word_freq[1]}")
+print(f"字母频率最小值：{min_letter_freq[0]}，频次：{min_letter_freq[1]}")
+
+def calculate_average_entropy(frequency_dict):
+    '''
+    计算平均信息熵
+    '''
+    total_count = sum(frequency_dict.values())
+    entropy = 0.0
+    for count in frequency_dict.values():
+        probability = count / total_count
+        entropy -= probability * math.log2(probability)
+    return entropy
+
+word_entropy = calculate_average_entropy(word_freq)
+print(f"word的平均信息熵: {word_entropy}")
+
+letter_entropy = calculate_average_entropy(letter_freq)
+print(f"letter的平均信息熵: {letter_entropy}")
+
+# 将word_freq和letter_freq数据转换为列表，用于绘图
+word_freq_sorted = sorted(word_freq.items(), key=lambda x: x[1], reverse=True)  # 按频次降序排序
+letter_freq_sorted = sorted(letter_freq.items(), key=lambda x: x[1], reverse=True)  # 按频次降序排序
+
+# 提取word letter和freq
+word, word_counts = zip(*word_freq_sorted)
+letter, letter_counts = zip(*letter_freq_sorted)
+plt.rcParams['font.sans-serif'] = ['SimHei']  # 设置字体为黑体
+plt.rcParams['axes.unicode_minus'] = False  # 正确显示负号
+# 绘制word_freq图
+plt.figure(figsize=(12, 6))
+plt.plot(word[:50], word_counts[:50], marker='o', linestyle='-')  # 取前50个词
+plt.title("Top 50 Words Frequencies")
+plt.xlabel("Word")
+plt.ylabel("Frequency")
+plt.xticks(rotation=90)  # 旋转X轴标签，避免重叠
+plt.tight_layout()  # 自动调整布局
+plt.show()
+
+# 绘制letter_freq图
+plt.figure(figsize=(12, 6))
+plt.plot(letter[:50], letter_counts[:50], marker='o', linestyle='-')  # 取前50个字
+plt.title("Top 50 letters Frequencies")
+plt.xlabel("letter")
+plt.ylabel("Frequency")
+plt.xticks(rotation=90)  # 旋转X轴标签，避免重叠
+plt.tight_layout()  # 自动调整布局
+plt.show()
