@@ -1,0 +1,108 @@
+import jieba
+import math
+import os
+import re
+from collections import Counter
+from matplotlib import pyplot as plt
+
+#读取预料库并统计词频
+#语料库总是有奇奇怪怪的字符，去除字符时加了很多特殊字符
+r1 = u'[a-zA-Z0-9’!"#$%&\'()*+,-./:：;；<=>?@，。?★、…【】（）⌊⌈⌋⌉¬•·․‖⟯⟮''ĀāǍǎĂăÁáÂâÃãÀàÄäÅåĄąBbCcÆæɐʙĆć' \
+       'ɑɒɓɔĊċČčDdĐđÇçďĎɗɖʣʤðÐĉĈĒēĚěĔĕÉéÊêĖėÈèËëĘęɜʚɘGgĜɞɛəɠɡĞɝɚʩĠġĢĝɣHhɦʜğɤĤĥɥɪģʯĦħɧɩĪīǏǐĬĭŌōǑǒÓóÔôɲÒ' \
+       'Ⅼ∟『』「」〈〉『』〖〗《》【】〘〙〛〚〕〔」「／＼＜＞＋％（）￥＠｝｛？“”‘’！[\\]^_`{|}~\u2000-\u2BFF]+'
+root_dir = r"E:\pc_zhang\2025_spring_term\class_study\DL_NLP\homework1\wiki_zh_2019\wiki_zh\AA"
+
+def get_corpus_and_frequency(root_dir):
+    '''
+    读取语料库并去除非汉字字符
+    得到分词和分字列表及列表中的词频
+    '''
+    corpus_word =[]
+    corpus_words =[]
+    def traverse_files(directory):
+        for file in os.listdir(directory):
+            path = os.path.join(directory, file)
+            if os.path.isfile(path):
+                try:
+                    with open(path, "r", encoding='utf-8') as f:                        
+                        file_context = re.sub(r1, '', f.read() ) # 移除标点和特殊字符
+                        file_context = file_context.replace("\n", '').replace(" ", '').replace("\\","")
+                        seglist = jieba.lcut_for_search(file_context)  # 分词
+                        seglist = [word for word in seglist if len(word) > 1]
+                        corpus_words.extend(seglist)  # 添加到语料库
+                        charlist = list(file_context)
+                        corpus_word.extend(charlist)
+
+                except Exception as e:
+                    print(f"Error processing file {path}: {e}")
+            elif os.path.isdir(path):
+                traverse_files(path)  # 递归处理子目录
+
+    traverse_files(root_dir)
+    words_freq = Counter(corpus_words)
+    word_freq = Counter(corpus_word)
+    return corpus_words, corpus_word, words_freq, word_freq
+
+def calculate_average_entropy(frequency_dict):
+    '''
+    计算平均信息熵
+    '''
+    total_count = sum(frequency_dict.values())
+    entropy = 0.0
+    for count in frequency_dict.values():
+        probability = count / total_count
+        entropy -= probability * math.log2(probability)
+    return entropy
+
+
+corpus_words, corpus_word, words_freq, word_freq = get_corpus_and_frequency(root_dir)  #语料库为列表，词频为字典
+print(corpus_words[:1000],corpus_word[:1000])
+print( f"词语料库数量：{len(corpus_words)},字语料库数量：{len(corpus_word)}" )
+
+max_words_freq = max(words_freq.items(), key=lambda x: x[1])
+max_word_freq = max(word_freq.items(), key=lambda x: x[1])
+min_words_freq = min(words_freq.items(), key=lambda x: x[1])
+min_word_freq = min(word_freq.items(), key=lambda x: x[1])
+
+# 输出结果
+print(f"词频率最大值：{max_words_freq[0]}，频次：{max_words_freq[1]}")
+print(f"字频率最大值：{max_word_freq[0]}，频次：{max_word_freq[1]}")
+print(f"词频率最小值：{min_words_freq[0]}，频次：{min_words_freq[1]}")
+print(f"字频率最小值：{min_word_freq[0]}，频次：{min_word_freq[1]}")
+words_entropy = calculate_average_entropy(words_freq)
+print(f"词的平均信息熵: {words_entropy}")
+
+word_entropy = calculate_average_entropy(word_freq)
+print(f"字的平均信息熵: {word_entropy}")
+
+#绘图
+
+# 将词频和字频数据转换为列表，用于绘图
+words_freq_sorted = sorted(words_freq.items(), key=lambda x: x[1], reverse=True)  # 按频次降序排序
+word_freq_sorted = sorted(word_freq.items(), key=lambda x: x[1], reverse=True)  # 按频次降序排序
+
+# 提取词和频次
+words, word_counts = zip(*words_freq_sorted)
+word, word_counts = zip(*word_freq_sorted)
+
+plt.rcParams['font.sans-serif'] = ['SimHei']  # 设置字体为黑体
+plt.rcParams['axes.unicode_minus'] = False  # 正确显示负号
+# 绘制词频图
+plt.figure(figsize=(12, 6))
+plt.plot(words[:50], word_counts[:50], marker='o', linestyle='-')  # 取前50个词
+plt.title("Top 50 Words Frequencies")
+plt.xlabel("Words")
+plt.ylabel("Frequency")
+plt.xticks(rotation=90)  # 旋转X轴标签，避免重叠
+plt.tight_layout()  # 自动调整布局
+plt.show()
+
+# 绘制字频图
+plt.figure(figsize=(12, 6))
+plt.plot(word[:50], word_counts[:50], marker='o', linestyle='-')  # 取前50个字
+plt.title("Top 50 word Frequencies")
+plt.xlabel("word")
+plt.ylabel("Frequency")
+plt.xticks(rotation=90)  # 旋转X轴标签，避免重叠
+plt.tight_layout()  # 自动调整布局
+plt.show()
