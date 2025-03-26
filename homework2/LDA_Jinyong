@@ -1,1 +1,139 @@
+import os
+import numpy as np
+import jieba
+from gensim import corpora, models
+from sklearn.model_selection import KFold
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
+# 设置语料库路径
+corpus_path = r"E:\pc_zhang\2025_spring_term\class_study\DL_NLP\homework2\data_jinyong"
+
+# 语料预处理，进行断句，去除一些广告和无意义内容
+def content_deal(content):
+    ad = ['本书来自www.cr173.com免费txt小说下载站\n更多更新免费电子书请关注www.cr173.com', '----〖新语丝电子文库(www.xys.org)〗', '新语丝电子文库',
+          '\u3000', '。', '？', '！', '，', '；', '：', '、', '《', '》', '“', '”', '‘', '’', '［', '］', '....', '......',
+          '『', '』', '/n', '（', '）', '…', '「', '」', '\ue41b', '＜', '＞', '+', '\x1a', '\ue42b']
+    for a in ad:
+        content = content.replace(a, '')
+    return content
+
+# 加载语料库并均匀抽取1000个段落
+def load_corpus(corpus_path, num_paragraphs=1000):
+    paragraphs = []
+    labels = []
+    novel_files = os.listdir(corpus_path)
+    num_novels = len(novel_files)
+    paragraphs_per_novel = num_paragraphs // num_novels
+
+    for novel in novel_files:
+        novel_path = os.path.join(corpus_path, novel)
+        with open(novel_path, 'r', encoding='GB18030') as f:
+            text = f.read()
+            text = content_deal(text)
+
+            lines = text.split('\n')
+            # 随机抽取段落，确保段落具有一定的长度
+            valid_indices = [i for i, line in enumerate(lines) if len(line.strip()) > 10]
+            selected_indices = np.random.choice(valid_indices, min(paragraphs_per_novel, len(valid_indices)), replace=False)
+            for idx in selected_indices:
+                paragraph = lines[idx].strip()
+                if paragraph:
+                    paragraphs.append(paragraph)
+                    labels.append(novel)
+    return paragraphs, labels
+
+# 对段落进行分词或分字处理
+def preprocess(paragraphs, unit_type='word', k=20):
+    processed_paragraphs = []
+    for paragraph in paragraphs:
+        if unit_type == 'word':
+            words = jieba.lcut(paragraph)
+        else:
+            words = list(paragraph)
+        # 截取或补充到k个token
+        if len(words) > k:
+            words = words[:k]
+        else:
+            words += ['<PAD>'] * (k - len(words))
+        processed_paragraphs.append(words)
+    return processed_paragraphs
+
+# 构建词典和语料
+def build_corpus(processed_paragraphs):
+    dictionary = corpora.Dictionary(processed_paragraphs)
+    corpus = [dictionary.doc2bow(paragraph) for paragraph in processed_paragraphs]
+    return dictionary, corpus
+
+# 使用LDA模型获取主题分布
+def get_lda_topics(corpus, dictionary, num_topics=5):
+    lda_model = models.LdaModel(corpus=corpus, id2word=dictionary, num_topics=num_topics, passes=20)
+    return lda_model
+
+# 将段落转换为主题分布
+def paragraphs_to_topics(lda_model, corpus):
+    topic_distributions = []
+    for doc in corpus:
+        topic_dist = lda_model[doc]
+        dist = [0.0] * lda_model.num_topics
+        for topic, prob in topic_dist:
+            dist[topic] = prob
+        topic_distributions.append(dist)
+    return np.array(topic_distributions)
+
+# 分类器训练和评估
+def classify_with_cross_validation(features, labels, num_folds=10):
+    kf = KFold(n_splits=num_folds, shuffle=True, random_state=42)
+    train_accuracies = []
+    test_accuracies = []
+
+    for train_index, test_index in kf.split(features):
+        X_train, X_test = features[train_index], features[test_index]
+        y_train, y_test = np.array(labels)[train_index], np.array(labels)[test_index]
+
+        # 使用SVM分类器
+        classifier = SVC(kernel='linear', probability=True)
+        classifier.fit(X_train, y_train)
+
+        # 计算训练集上的预测结果和准确率
+        y_train_pred = classifier.predict(X_train)
+        train_accuracy = accuracy_score(y_train, y_train_pred)
+        train_accuracies.append(train_accuracy)
+
+        # 计算测试集上的预测结果和准确率
+        y_test_pred = classifier.predict(X_test)
+        test_accuracy = accuracy_score(y_test, y_test_pred)
+        test_accuracies.append(test_accuracy)
+    return np.mean(train_accuracies), np.mean(test_accuracies)
+# 主函数
+def main():
+    k_values = [20, 100, 500, 1000, 3000]
+    T_values = [10, 50, 100, 150, 200]
+    unit_type=['word','char']
+    for unit_type in unit_type:
+        for k in k_values:
+            # 加载和预处理数据
+            paragraphs, labels = load_corpus(corpus_path)
+            processed_paragraphs = preprocess(paragraphs, unit_type=unit_type, k=k)
+
+            for T in T_values:
+               
+                # 构建词典和语料
+                dictionary, corpus = build_corpus(processed_paragraphs)
+
+                # 训练LDA模型
+                lda_model = get_lda_topics(corpus, dictionary, num_topics=T)
+
+                # 获取段落的主题分布
+                topic_distributions = paragraphs_to_topics(lda_model, corpus)
+
+                # 分类和交叉验证
+                train_acc, test_acc = classify_with_cross_validation(topic_distributions, labels)
+
+                print(f"k = {k}, T = {T}:")
+                print(f"训练集平均准确率: {train_acc:.4f}")
+                print(f"测试集平均准确率: {test_acc:.4f}")
+                print("-" * 50)
+
+if __name__ == "__main__":
+    main()
