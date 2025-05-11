@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">团队成员</h1>
+
+    <div class="row">
+        <!-- 教师团队 -->
+        <div class="col-12 mb-4">
+            <h2 class="mb-3">教师团队</h2>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card team-card">
+                        <div class="card-body text-center">
+                            <img src="/static/img/avatar.jpg" class="rounded-circle mb-3" alt="张三" style="width:150px;height:150px;object-fit:cover;border:3px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,.1);">
+                            <h4 class="card-title">张三</h4>
+                            <p class="card-text">教授 / 实验室主任</p>
+                            <p class="card-text">
+                                <span class="badge bg-primary">自动化测试</span>
+                                <span class="badge bg-primary">质量保证</span>
+                            </p>
+                            <p class="card-text">研究方向：软件测试自动化、质量保证体系</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <div class="card team-card">
+                        <div class="card-body text-center">
+                            <img src="/static/img/avatar.jpg" class="rounded-circle mb-3" alt="李四" style="width:150px;height:150px;object-fit:cover;border:3px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,.1);">
+                            <h4 class="card-title">李四</h4>
+                            <p class="card-text">副教授</p>
+                            <p class="card-text">
+                                <span class="badge bg-primary">性能测试</span>
+                                <span class="badge bg-primary">测试工具</span>
+                            </p>
+                            <p class="card-text">研究方向：性能测试与优化、测试工具开发</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 学生团队 -->
+        <div class="col-12">
+            <h2 class="mb-3">学生团队</h2>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card team-card">
+                        <div class="card-body text-center">
+                            <img src="/static/img/avatar.jpg" class="rounded-circle mb-3" alt="王五" style="width:150px;height:150px;object-fit:cover;border:3px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,.1);">
+                            <h4 class="card-title">王五</h4>
+                            <p class="card-text">博士研究生</p>
+                            <p class="card-text">
+                                <span class="badge bg-success">机器学习</span>
+                                <span class="badge bg-success">测试生成</span>
+                            </p>
+                            <p class="card-text">研究方向：基于机器学习的测试用例生成</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <div class="card team-card">
+                        <div class="card-body text-center">
+                            <img src="/static/img/avatar.jpg" class="rounded-circle mb-3" alt="赵六" style="width:150px;height:150px;object-fit:cover;border:3px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,.1);">
+                            <h4 class="card-title">赵六</h4>
+                            <p class="card-text">硕士研究生</p>
+                            <p class="card-text">
+                                <span class="badge bg-success">持续集成</span>
+                                <span class="badge bg-success">自动化测试</span>
+                            </p>
+                            <p class="card-text">研究方向：持续集成环境下的自动化测试</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.team-card {
+    transition: transform 0.3s ease;
+}
+
+.team-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,.1);
+}
+
+.badge {
+    margin: 0 2px;
+}
+
+.team-card img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+</style>
+{% endblock %} 

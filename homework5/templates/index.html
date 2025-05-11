@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="jumbotron bg-light p-5 rounded position-relative" style="overflow:hidden;">
+            <div style="position:absolute;left:0;top:0;width:100%;height:100%;z-index:0;opacity:0.18;pointer-events:none;">
+                <img src="/static/img/lab_logo.jpg" alt="自动测试实验室" style="width:100%;height:100%;object-fit:cover;">
+            </div>
+            <div style="position:relative;z-index:1;">
+                <h1 class="display-4">欢迎来到自动测试实验室</h1>
+                <p class="lead">我们致力于软件测试自动化、质量保证和测试工程的研究与创新。</p>
+                <hr class="my-4">
+                <p>探索我们的研究项目，了解我们的团队，或查看我们的最新成果。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">实验室动态</h3>
+                <div class="news-list">
+                    <div class="news-item">
+                        <div class="news-date">2024-03-15</div>
+                        <h5>学术活动：自动化测试技术研讨会</h5>
+                        <p>实验室成功举办自动化测试技术研讨会，来自全国各地的专家学者共同探讨了测试自动化领域的最新进展。</p>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-date">2024-03-10</div>
+                        <h5>国际会议：ICSE 2024论文录用</h5>
+                        <p>实验室博士生王五的论文《基于深度学习的测试用例生成方法》被ICSE 2024录用。</p>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-date">2024-03-05</div>
+                        <h5>学术沙龙：软件质量保证实践分享</h5>
+                        <p>实验室举办软件质量保证实践分享会，邀请了多位行业专家分享实践经验。</p>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-date">2024-02-28</div>
+                        <h5>国内会议：全国软件测试大会</h5>
+                        <p>实验室团队参加全国软件测试大会，并做主题报告《持续集成环境下的自动化测试实践》。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">核心团队</h3>
+                <div class="team-preview">
+                    <div class="team-member text-center mb-4">
+                        <img src="/static/img/avatar.jpg" alt="张三" style="width:150px;height:150px;object-fit:cover;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,.1);">
+                        <h5 class="mt-2">张三</h5>
+                        <p class="text-muted">实验室主任</p>
+                    </div>
+                    <div class="team-member text-center">
+                        <img src="/static/img/avatar.jpg" alt="李四" style="width:150px;height:150px;object-fit:cover;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,.1);">
+                        <h5 class="mt-2">李四</h5>
+                        <p class="text-muted">副教授</p>
+                    </div>
+                </div>
+                <div class="text-center mt-3">
+                    <a href="/team" class="btn btn-primary">查看完整团队</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">研究方向</h5>
+                <p class="card-text">自动化测试、持续集成、测试用例生成、性能测试等。</p>
+                <a href="/research" class="btn btn-primary">了解更多</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">最新成果</h5>
+                <p class="card-text">查看我们最新的研究成果和发表的论文。</p>
+                <a href="/publications" class="btn btn-primary">查看详情</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">加入我们</h5>
+                <p class="card-text">我们欢迎优秀的研究人员和学生加入我们的团队。</p>
+                <a href="/contact" class="btn btn-primary">联系我们</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

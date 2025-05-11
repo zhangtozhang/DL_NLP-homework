@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">联系我们</h1>
+
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">联系方式</h3>
+                    <p class="card-text">
+                        <strong>地址：</strong>北京市海淀区XX路XX号<br>
+                        <strong>邮编：</strong>100000<br>
+                        <strong>电话：</strong>010-12345678<br>
+                        <strong>邮箱：</strong>contact@autotestlab.edu.cn
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">加入我们</h3>
+                    <p class="card-text">
+                        我们欢迎对软件测试、质量保证和自动化测试感兴趣的研究人员和学生加入我们的团队。
+                        <br><br>
+                        <strong>招聘职位：</strong><br>
+                        - 博士后研究员<br>
+                        - 博士研究生<br>
+                        - 硕士研究生<br>
+                        - 研究助理
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">联系我们</h3>
+                    <form>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">姓名</label>
+                            <input type="text" class="form-control" id="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">邮箱</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">主题</label>
+                            <input type="text" class="form-control" id="subject" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">留言</label>
+                            <textarea class="form-control" id="message" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">发送消息</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
